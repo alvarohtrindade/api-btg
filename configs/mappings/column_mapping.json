@@ -1,0 +1,12 @@
+{
+  "column_mapping": {
+    "Nome Fundo": "NmFundo",
+    "Data": "DtPosicao",
+    "Portfólio Inv.": "Categoria",
+    "Quantidade": "Qnt",
+    "Financeiro": "VlrMercado",
+    "Classificacao": "Grupo",
+    "Tp_Fundo": "TpFundo"
+  },
+  "drop_columns": ["Quota"]
+}

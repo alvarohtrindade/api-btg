@@ -1,0 +1,136 @@
+{
+  "db_config": {
+    "table_name": "despesas_fundos",
+    "columns": [
+      {
+        "name": "data",
+        "type": "date",
+        "required": true,
+        "description": "Data da operação/lançamento"
+      },
+      {
+        "name": "nmfundo",
+        "type": "string",
+        "required": true,
+        "max_length": 255,
+        "description": "Nome do fundo"
+      },
+      {
+        "name": "nmcategorizado",
+        "type": "string",
+        "required": false,
+        "max_length": 255,
+        "description": "Nome categorizado do fundo"
+      },
+      {
+        "name": "lancamento",
+        "type": "string",
+        "required": true,
+        "max_length": 255,
+        "description": "Descrição do lançamento"
+      },
+      {
+        "name": "lancamento_original",
+        "type": "string",
+        "required": false,
+        "max_length": 255,
+        "description": "Descrição original do lançamento"
+      },
+      {
+        "name": "valor",
+        "type": "decimal",
+        "required": true,
+        "precision": 15,
+        "scale": 2,
+        "description": "Valor do lançamento"
+      },
+      {
+        "name": "tipo_lancamento",
+        "type": "string",
+        "required": true,
+        "max_length": 50,
+        "description": "Tipo de lançamento (CREDITO, DEBITO, OUTROS)"
+      },
+      {
+        "name": "categoria",
+        "type": "string",
+        "required": false,
+        "max_length": 50,
+        "description": "Categoria do lançamento"
+      },
+      {
+        "name": "observacao",
+        "type": "text",
+        "required": false,
+        "description": "Observações adicionais"
+      },
+      {
+        "name": "custodiante",
+        "type": "string",
+        "required": false,
+        "max_length": 100,
+        "description": "Nome do custodiante"
+      },
+      {
+        "name": "TpFundo",
+        "type": "string",
+        "required": false,
+        "max_length": 50,
+        "description": "Tipo do fundo"
+      },
+      {
+        "name": "ano",
+        "type": "integer",
+        "required": false,
+        "description": "Ano da operação"
+      },
+      {
+        "name": "mes",
+        "type": "string",
+        "required": false,
+        "max_length": 20,
+        "description": "Mês da operação"
+      }
+    ]
+  },
+  "target_columns": [
+    "data",
+    "nmfundo",
+    "nmcategorizado",
+    "lancamento",
+    "lancamento_original",
+    "valor",
+    "tipo_lancamento",
+    "categoria",
+    "observacao",
+    "custodiante",
+    "TpFundo",
+    "ano",
+    "mes"
+  ],
+  "validation_rules": {
+    "required_fields": ["data", "nmfundo", "lancamento", "valor", "tipo_lancamento"],
+    "tipo_lancamento_values": ["CREDITO", "DEBITO", "OUTROS"],
+    "decimal_precisions": {
+      "valor": 2
+    },
+    "date_formats": ["YYYY-MM-DD"],
+    "default_values": {
+      "custodiante": "BTG",
+      "TpFundo": "EXTRATO"
+    }
+  },
+  "data_quality": {
+    "check_duplicates": ["data", "nmfundo", "lancamento", "valor"],
+    "null_tolerance": {
+      "nmcategorizado": true,
+      "lancamento_original": true,
+      "categoria": true,
+      "observacao": true,
+      "custodiante": true,
+      "TpFundo": true,
+      "ano": true,
+      "mes": true
+    }
+  }
+}

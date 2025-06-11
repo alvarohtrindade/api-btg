@@ -1,0 +1,68 @@
+{
+  "db_config": {
+    "table_name": "carteira_btgp",
+    "columns": [
+      {
+        "name": "NmFundo",
+        "type": "string",
+        "required": true,
+        "description": "Nome do fundo (padronizado)"
+      },
+      {
+        "name": "TpFundo",
+        "type": "string",
+        "required": false,
+        "description": "Tipo do fundo extraído do nome"
+      },
+      {
+        "name": "DtPosicao",
+        "type": "date",
+        "required": true,
+        "description": "Data da posição (YYYY-MM-DD)"
+      },
+      {
+        "name": "Descricao",
+        "type": "string",
+        "required": false,
+        "description": "Descrição padronizada"
+      },
+      {
+        "name": "Qnt",
+        "type": "string",
+        "required": false,
+        "description": "Quantidade formatada (milhares)"
+      },
+      {
+        "name": "VlrMercado",
+        "type": "float",
+        "required": true,
+        "description": "Valor de mercado"
+      },
+      {
+        "name": "Categoria",
+        "type": "string",
+        "required": true,
+        "description": "Categoria (por exemplo: ‘Portfolio_Investido’, ‘Acoes’...)"
+      },
+      {
+        "name": "Cod",
+        "type": "string",
+        "required": false,
+        "description": "Código numérico ou string de categoria"
+      },
+      {
+        "name": "Grupo",
+        "type": "string",
+        "required": true,
+        "description": "Grupo (por exemplo: ‘RENDA FIXA’, ‘DESPESAS’...)"
+      },
+      {
+        "name": "Custodiante",
+        "type": "string",
+        "required": true,
+        "description": "Nome do custodiante (sempre ‘BTG’ neste fluxo)"
+      }
+    ]
+  },
+  "target_columns": ["NmFundo", "TpFundo", "DtPosicao", "Descricao", "Qnt", "VlrMercado", "Categoria", "Cod", "Grupo", "Custodiante"]
+}

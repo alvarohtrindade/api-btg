@@ -1,0 +1,24 @@
+{
+  "process_name": {
+    "fund_holdings_etl": {
+      "to": ["cesar.ag@gmail.com"],
+      "cc": [],
+      "bcc": []
+    },
+    "risk_calculation": {
+      "to": ["data-alerts@cataliseinvestimentos.com"],
+      "cc": [""],
+      "bcc": []
+    },
+    "compliance_report": {
+      "to": ["cgodoy@cataliseinvestimentos.com"],
+      "cc": [],
+      "bcc": []
+    },
+    "all_alerts": {
+      "to": ["cesar.ag@gmail.com"],
+      "cc": [],
+      "bcc": []
+    }
+  }
+}

@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório ETL BTG - Carteira, Rentabilidade & Extrato</title>
+    <style>
+        /* ----- Reset e tipografia básica ----- */
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .header h2 {
+            margin: 0;
+            color: #0066cc;
+        }
+        .header .metadata {
+            margin-top: 8px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* ----- Caixa de resumo (summary boxes) ----- */
+        .summary-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .summary-card {
+            flex: 1 1 30%;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            margin: 5px;
+            padding: 15px;
+            text-align: center;
+            box-sizing: border-box;
+            min-width: 150px;
+        }
+
+        .summary-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #0066cc;
+        }
+        .summary-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        /* ----- Tabela de detalhe ----- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 12px;
+            background-color: white;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        thead {
+            background-color: #f2f2f2;
+        }
+        th, td {
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            position: sticky;
+            top: 0;
+            background-color: #f2f2f2;
+            z-index: 1;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .status-success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .status-failure {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .status-skipped {
+            color: #e67e22;
+            font-weight: bold;
+        }
+        .alert-row {
+            background-color: #fff5f5;
+        }
+
+        /* ----- Seções adicionais ----- */
+        .section-title {
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            border-left: 4px solid #0066cc;
+            padding-left: 10px;
+        }
+
+        .footer {
+            font-size: 12px;
+            color: #999;
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+
+        /* Novos estilos para detalhamento por fundo */
+        .fund-details-table {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .fund-details-table th {
+            background-color: #e8f4fd;
+            color: #0066cc;
+        }
+
+        .collapsible-section {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        .collapsible-header {
+            background-color: #f8f9fa;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+        }
+
+        .collapsible-header:hover {
+            background-color: #e9ecef;
+        }
+
+        .collapsible-content {
+            padding: 15px;
+            display: block;
+        }
+
+        .collapsible-content.collapsed {
+            display: none;
+        }
+
+        .toggle-icon {
+            float: right;
+            transition: transform 0.2s;
+        }
+
+        .toggle-icon.rotated {
+            transform: rotate(180deg);
+        }
+
+        /* Estilo para endpoint extrato */
+        .extrato-highlight {
+            background-color: #e8f5e8;
+            border-left: 4px solid #28a745;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .summary-card {
+                flex: 1 1 45%;
+                min-width: 120px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .summary-card {
+                flex: 1 1 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- ====== Cabeçalho ====== -->
+        <div class="header">
+            <h2>Relatório ETL BTG - Carteira, Rentabilidade & Extrato</h2>
+            <div class="metadata">
+                <span><strong>Data de Processamento:</strong> {{ data_referencia }}</span> |
+                {% if total_dates_processed is defined and total_dates_processed > 1 %}
+                    <span><strong>Período:</strong> {{ date_range }} ({{ total_dates_processed }} dias úteis)</span> |
+                {% else %}
+                    <span><strong>Data de Referência:</strong> {{ date_range }}</span> |
+                {% endif %}
+                <span><strong>Duração Total:</strong> {{ duracao_total }}</span> |
+                <span><strong>Status:</strong>
+                    {% if status == "SUCESSO" %}
+                        <span class="status-success">{{ status }}</span>
+                    {% else %}
+                        <span class="status-failure">{{ status }}</span>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+
+        <!-- ====== Linha de cartões de resumo – CARTEIRA ====== -->
+        <div class="section-title">Resumo – Carteira</div>
+        <div class="summary-row">
+            <div class="summary-card">
+                <div class="summary-value">{{ extracao_num_arquivos }}</div>
+                <div class="summary-label">Arquivos Extraídos</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-value">{{ extracao_tamanho_total }}</div>
+                <div class="summary-label">Tamanho Total</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-value">{{ extracao_duracao }}</div>
+                <div class="summary-label">Duração Extração</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-value">{{ processamento_total_arquivos }}</div>
+                <div class="summary-label">Arquivos Processados</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-value">{{ processamento_total_registros }}</div>
+                <div class="summary-label">Registros Inseridos</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-value">{{ processamento_duracao }}</div>
+                <div class="summary-label">Duração Processamento</div>
+            </div>
+        </div>
+
+        <!-- ==== Tabela de detalhe – CARTEIRA ==== -->
+        <div class="collapsible-section">
+            <div class="collapsible-header" onclick="toggleSection('carteira-detail')">
+                Detalhamento de Processamento – Carteira
+                <span class="toggle-icon" id="carteira-detail-icon">▼</span>
+            </div>
+            <div class="collapsible-content" id="carteira-detail">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fundo (Arquivo)</th>
+                            <th>Data Processo</th>
+                            <th>Total Linhas</th>
+                            <th>Inseridos</th>
+                            <th>Duração (s)</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in processing_rows_carteira %}
+                            {% set has_error = (row.status_text == "failure") %}
+                            <tr class="{% if has_error %}alert-row{% endif %}">
+                                <td>{{ row.fundo }}</td>
+                                <td>{{ row.date }}</td>
+                                <td>
+                                    {% if row.status_text == "skipped" %}
+                                        -
+                                    {% else %}
+                                        {{ row.total }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if row.status_text == "skipped" %}
+                                        -
+                                    {% else %}
+                                        {{ row.inserted }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if row.status_text == "skipped" %}
+                                        -
+                                    {% else %}
+                                        {{ row.duration }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if row.status_text == "success" %}
+                                        <span class="status-success">SUCESSO</span>
+                                    {% elif row.status_text == "skipped" %}
+                                        <span class="status-skipped">IGNORADO</span>
+                                    {% else %}
+                                        <span class="status-failure">FALHA</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        {% if processing_rows_carteira|length == 0 %}
+                            <tr>
+                                <td colspan="6" style="text-align:center; color:#A00;">Nenhum fundo processado (Carteira).</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ====== Linha de cartões de resumo – RENTABILIDADE ====== -->
+        <div class="section-title">Resumo – Rentabilidade</div>
+        <div class="summary-row">
+            <div class="summary-card">
+                <div class="summary-value">{{ rentabilidade_total_arquivos }}</div>
+                <div class="summary-label">Arquivos Extraídos</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-value">{{ rentabilidade_total_registros }}</div>
+                <div class="summary-label">Registros Inseridos</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-value">{{ rentabilidade_total_fundos }}</div>
+                <div class="summary-label">Fundos Únicos</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-value">{{ rentabilidade_duracao }}</div>
+                <div class="summary-label">Duração Processamento</div>
+            </div>
+        </div>
+
+        <!-- ==== Detalhamento por Arquivo – RENTABILIDADE ==== -->
+        <div class="collapsible-section">
+            <div class="collapsible-header" onclick="toggleSection('rent-arquivo-detail')">
+                Detalhamento por Arquivo – Rentabilidade
+                <span class="toggle-icon" id="rent-arquivo-detail-icon">▼</span>
+            </div>
+            <div class="collapsible-content collapsed" id="rent-arquivo-detail">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Arquivo JSON</th>
+                            <th>Data Processo</th>
+                            <th>Total Linhas</th>
+                            <th>Fundos Únicos</th>
+                            <th>Inseridos</th>
+                            <th>Duração (s)</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in processing_rows_rent %}
+                            {% set has_error = (row.status_text == "failure") %}
+                            <tr class="{% if has_error %}alert-row{% endif %}">
+                                <td>{{ row.Arquivo }}</td>
+                                <td>{{ row['Data Processo'] }}</td>
+                                <td>
+                                    {% if row.Status == "SEM DADOS" %}
+                                        -
+                                    {% else %}
+                                        {{ row['Total Linhas'] }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if row.Status == "SEM DADOS" %}
+                                        -
+                                    {% else %}
+                                        {{ row.get('Fundos Únicos', '-') }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if row.Status == "SEM DADOS" %}
+                                        -
+                                    {% else %}
+                                        {{ row.Inseridos }}
+                                    {% endif %}
+                                </td>
+                                <td>{{ row['Duração (s)'] }}</td>
+                                <td>
+                                    {% if "SUCESSO" in row.Status %}
+                                        <span class="status-success">SUCESSO</span>
+                                    {% elif "SEM DADOS" in row.Status or "IGNORADO" in row.Status %}
+                                        <span class="status-skipped">IGNORADO</span>
+                                    {% else %}
+                                        <span class="status-failure">FALHA</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        {% if processing_rows_rent|length == 0 %}
+                            <tr>
+                                <td colspan="7" style="text-align:center; color:#A00;">Nenhum arquivo processado (Rentabilidade).</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ==== NOVO: Detalhamento por Fundo – RENTABILIDADE ==== -->
+        {% if detalhamento_por_fundo_rent and detalhamento_por_fundo_rent|length > 0 %}
+        <div class="collapsible-section">
+            <div class="collapsible-header" onclick="toggleSection('rent-fundo-detail')">
+                Detalhamento por Fundo – Rentabilidade ({{ detalhamento_por_fundo_rent|length }} fundos únicos)
+                <span class="toggle-icon" id="rent-fundo-detail-icon">▼</span>
+            </div>
+            <div class="collapsible-content collapsed" id="rent-fundo-detail">
+                <div class="fund-details-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nome do Fundo</th>
+                                <th>Data Processo</th>
+                                <th>Registros</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for fund in detalhamento_por_fundo_rent %}
+                                <tr>
+                                    <td>{{ fund.fundo }}</td>
+                                    <td>{{ fund.date }}</td>
+                                    <td>{{ fund.total }}</td>
+                                    <td>
+                                        {% if fund.status_text == "success" %}
+                                            <span class="status-success">SUCESSO</span>
+                                        {% elif fund.status_text == "skipped" %}
+                                            <span class="status-skipped">IGNORADO</span>
+                                        {% else %}
+                                            <span class="status-failure">FALHA</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- ====== NOVO: Linha de cartões de resumo – EXTRATO ====== -->
+        <div class="section-title extrato-highlight">Resumo – Caixa Extrato</div>
+        <div class="summary-row">
+            <div class="summary-card extrato-highlight">
+                <div class="summary-value">{{ extrato_total_arquivos }}</div>
+                <div class="summary-label">Arquivos Extraídos</div>
+            </div>
+            <div class="summary-card extrato-highlight">
+                <div class="summary-value">{{ extrato_total_registros }}</div>
+                <div class="summary-label">Registros Inseridos</div>
+            </div>
+            <div class="summary-card extrato-highlight">
+                <div class="summary-value">{{ extrato_duracao }}</div>
+                <div class="summary-label">Duração Processamento</div>
+            </div>
+        </div>
+
+        <!-- ==== NOVO: Detalhamento por Arquivo – EXTRATO ==== -->
+        <div class="collapsible-section">
+            <div class="collapsible-header" onclick="toggleSection('extrato-detail')">
+                Detalhamento por Arquivo – Caixa Extrato
+                <span class="toggle-icon" id="extrato-detail-icon">▼</span>
+            </div>
+            <div class="collapsible-content collapsed" id="extrato-detail">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Arquivo JSON</th>
+                            <th>Data Processo</th>
+                            <th>Total Linhas</th>
+                            <th>Inseridos</th>
+                            <th>Duração (s)</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in processing_rows_extrato %}
+                            {% set has_error = (row.status_text == "failure") %}
+                            <tr class="{% if has_error %}alert-row{% endif %}">
+                                <td>{{ row.fundo }}</td>
+                                <td>{{ row.date }}</td>
+                                <td>
+                                    {% if row.status_text == "skipped" %}
+                                        -
+                                    {% else %}
+                                        {{ row.total }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if row.status_text == "skipped" %}
+                                        -
+                                    {% else %}
+                                        {{ row.inserted }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if row.status_text == "skipped" %}
+                                        -
+                                    {% else %}
+                                        {{ row.duration }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if row.status_text == "success" %}
+                                        <span class="status-success">SUCESSO</span>
+                                    {% elif row.status_text == "skipped" %}
+                                        <span class="status-skipped">IGNORADO</span>
+                                    {% else %}
+                                        <span class="status-failure">FALHA</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        {% if processing_rows_extrato|length == 0 %}
+                            <tr>
+                                <td colspan="6" style="text-align:center; color:#A00;">Nenhum arquivo processado (Extrato).</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ====== Seções opcionais (Arquivos Ignorados, Fundos Críticos, Fundos Ausentes, Erros) ====== -->
+        {% if skipped_files_section %}
+        <div class="section-title">Arquivos Ignorados</div>
+        <div>{{ skipped_files_section | safe }}</div>
+        {% endif %}
+
+        {% if critical_funds_section %}
+        <div class="section-title">Fundos Críticos</div>
+        <div>{{ critical_funds_section | safe }}</div>
+        {% endif %}
+
+        {% if missing_funds_section %}
+        <div class="section-title">Fundos Ausentes</div>
+        <div>{{ missing_funds_section | safe }}</div>
+        {% endif %}
+
+        {% if errors_section %}
+        <div class="section-title">Erros Detectados</div>
+        <div>{{ errors_section | safe }}</div>
+        {% endif %}
+
+        <!-- ====== Rodapé ====== -->
+        <div class="footer">
+            <p>ETL BTG - Carteira, Rentabilidade & Extrato – Catalise Investimentos</p>
+            {% if total_dates_processed is defined and total_dates_processed > 1 %}
+                <p>Período: {{ date_range }} ({{ total_dates_processed }} dias úteis processados)</p>
+            {% else %}
+                <p>Data de Referência: {{ date_range }}</p>
+            {% endif %}
+            <p>Versão: 1.3.0 - Incluído endpoint de Caixa Extrato</p>
+            <p>Execution ID: {{ execution_id }}</p>
+            <p>Log completo: {{ log_path }}</p>
+        </div>
+    </div>
+
+    <script>
+        function toggleSection(sectionId) {
+            const content = document.getElementById(sectionId);
+            const icon = document.getElementById(sectionId + '-icon');
+            
+            if (content.classList.contains('collapsed')) {
+                content.classList.remove('collapsed');
+                icon.textContent = '▲';
+                icon.classList.add('rotated');
+            } else {
+                content.classList.add('collapsed');
+                icon.textContent = '▼';
+                icon.classList.remove('rotated');
+            }
+        }
+    </script>
+</body>
+</html>

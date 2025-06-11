@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 20px;
+      color: #2c2c2c;
+      padding: 24px;
+      background-color: #ffffff;
+    }
+    .title {
+      color: #b71c1c;
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 24px;
+    }
+    .section {
+      margin-bottom: 20px;
+    }
+    .label {
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+    .code-block {
+      background-color: #f9f9f9;
+      border-left: 5px solid #b71c1c;
+      padding: 14px;
+      font-family: Consolas, monospace;
+      font-size: 15px;
+      white-space: pre-wrap;
+      color: #111;
+      margin-top: 10px;
+    }
+    .footer {
+      font-size: 13px;
+      color: #777;
+      margin-top: 30px;
+      border-top: 1px solid #ddd;
+      padding-top: 12px;
+    }
+  </style>
+</head>
+<body>
+  <!-- O conteúdo da página vai aqui -->
+  <div class="title">Falha no Processamento - ${pipeline_id}</div>
+  
+  <div class="section">
+    <span class="label">Empresa:</span> ${company}
+  </div>
+  
+  <div class="section">
+    <span class="label">Data/Hora:</span> ${timestamp}
+  </div>
+  
+  <div class="section">
+    <span class="label">Arquivo de Entrada:</span> ${input_file}
+  </div>
+  
+  <div class="section">
+    <span class="label">Mensagem de Erro:</span>
+    <div class="code-block">${error_msg}</div>
+  </div>
+  
+  <div class="section">
+    <span class="label">Modo de Execução:</span> ${execution_mode}
+  </div>
+  
+  <div class="section">
+    <span class="label">Parâmetros:</span>
+    <div class="code-block">force = ${force_flag}
+dry_run = ${dry_run}
+validate = ${validate_flag}</div>
+  </div>
+  
+  <div class="footer">
+    © 2025 - Sistema Catálise - Notificação automática
+  </div>
+</body>
+</html>

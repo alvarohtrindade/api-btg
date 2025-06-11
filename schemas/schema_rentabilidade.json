@@ -1,0 +1,128 @@
+{
+  "db_config": {
+    "table_name": "Ft_RentabilidadeDiaria",
+    "columns": [
+      {
+        "name": "NmFundo",
+        "type": "string",
+        "required": true,
+        "description": "Nome do fundo de investimento"
+      },
+      {
+        "name": "CdConta",
+        "type": "string",
+        "required": false,
+        "description": "Código da conta"
+      },
+      {
+        "name": "DocFundo",
+        "type": "string",
+        "required": false,
+        "description": "CNPJ do fundo"
+      },
+      {
+        "name": "DtPosicao",
+        "type": "date",
+        "required": true,
+        "description": "Data de posição"
+      },
+      {
+        "name": "VlrCotacao",
+        "type": "float",
+        "required": true,
+        "description": "Valor da cotação líquida"
+      },
+      {
+        "name": "VlrCotacaoBruta",
+        "type": "float",
+        "required": false,
+        "description": "Valor da cotação bruta"
+      },
+      {
+        "name": "VlrPatrimonio",
+        "type": "float",
+        "required": false,
+        "description": "Valor do patrimônio"
+      },
+      {
+        "name": "QtdCota",
+        "type": "float",
+        "required": false,
+        "description": "Quantidade de cotas"
+      },
+      {
+        "name": "VlrAplicacao",
+        "type": "float",
+        "required": false,
+        "description": "Valor de aplicações"
+      },
+      {
+        "name": "VlrResgate",
+        "type": "float",
+        "required": false,
+        "description": "Valor de resgates"
+      },
+      {
+        "name": "RentDia",
+        "type": "float",
+        "required": false,
+        "description": "Rentabilidade do dia"
+      },
+      {
+        "name": "RentMes",
+        "type": "float",
+        "required": false,
+        "description": "Rentabilidade do mês"
+      },
+      {
+        "name": "RentAno",
+        "type": "float",
+        "required": false,
+        "description": "Rentabilidade do ano"
+      },
+      {
+        "name": "RentDiaVsCDI",
+        "type": "float",
+        "required": false,
+        "description": "Rentabilidade do dia vs CDI"
+      },
+      {
+        "name": "RentMesVsCDI",
+        "type": "float",
+        "required": false,
+        "description": "Rentabilidade do mês vs CDI"
+      },
+      {
+        "name": "RentAnoVsCDI",
+        "type": "float",
+        "required": false,
+        "description": "Rentabilidade do ano vs CDI"
+      },
+      {
+        "name": "TpClasse",
+        "type": "string",
+        "required": false,
+        "description": "Tipo de classe hierárquica"
+      }
+    ]
+  },
+  "target_columns": [
+    "NmFundo",
+    "CdConta", 
+    "DocFundo",
+    "DtPosicao",
+    "VlrCotacao",
+    "VlrCotacaoBruta",
+    "VlrPatrimonio",
+    "QtdCota",
+    "VlrAplicacao",
+    "VlrResgate",
+    "RentDia",
+    "RentMes",
+    "RentAno",
+    "RentDiaVsCDI",
+    "RentMesVsCDI",
+    "RentAnoVsCDI",
+    "TpClasse"
+  ]
+}

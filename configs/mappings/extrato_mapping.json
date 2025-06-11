@@ -1,0 +1,69 @@
+{
+  "column_mapping": {
+    "assetName": "nmfundo",
+    "assetDocument": "DocFundo",
+    "accountNumber": "CdConta", 
+    "balance": "valor",
+    "operationDate": "data",
+    "history": "lancamento",
+    "credit": "VlrCredito",
+    "debt": "VlrDebito",
+    "observation": "observacao",
+    "remet": "Remetente",
+    "hierarchyClass": "categoria",
+    "subClassCode": "CdSubClasse",
+    "distributor": "Distribuidor",
+    "username": "NmUsuario"
+  },
+  "fund_name_mapping": {
+    "IRIS FIC FIM CP": "FICFIM IRIS",
+    "ATICO FIC FIM CP": "FICFIM ATICO",
+    "OMEGA FIC FIM CP": "FICFIM OMEGA",
+    "FBJ77 FIC FIM CP": "FICFIM FBJ77",
+    "GANESHA FIC FIM CP": "FICFIM GANESHA",
+    "PAN FIC FIM CP": "FICFIM PAN",
+    "FIGUEIREDO FIC FIM CP": "FICFIM FIGUEIREDO",
+    "ABX9 FIC FIM CP": "FIM ABX9",
+    "ITC FIC FIM CP": "FICFIM ITC",
+    "GMOT FIC FIM CP": "FICFIM GMOT",
+    "OIKOS FIC FIM CP": "FICFIM OIKOS"
+  },
+  "data_types": {
+    "valor": "decimal(15,2)",
+    "VlrCredito": "decimal(15,2)",
+    "VlrDebito": "decimal(15,2)",
+    "data": "date",
+    "CdConta": "varchar(20)",
+    "DocFundo": "varchar(20)",
+    "nmfundo": "varchar(100)",
+    "lancamento": "varchar(255)",
+    "observacao": "varchar(255)",
+    "Remetente": "varchar(100)",
+    "categoria": "varchar(50)",
+    "CdSubClasse": "varchar(20)",
+    "Distribuidor": "boolean",
+    "NmUsuario": "varchar(100)"
+  },
+  "decimal_precisions": {
+    "valor": 2,
+    "VlrCredito": 2,
+    "VlrDebito": 2
+  },
+  "required_columns": [
+    "nmfundo",
+    "data",
+    "lancamento",
+    "valor"
+  ],
+  "monetary_fields": [
+    "valor",
+    "VlrCredito", 
+    "VlrDebito"
+  ],
+  "boolean_fields": [
+    "Distribuidor"
+  ],
+  "date_fields": [
+    "data"
+  ]
+}

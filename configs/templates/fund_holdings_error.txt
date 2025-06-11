@@ -1,0 +1,18 @@
+FALHA NO PROCESSAMENTO - ${pipeline_id}
+
+Empresa: ${company}
+Data/Hora: ${timestamp}
+Arquivo de Entrada: ${input_file}
+
+MENSAGEM DE ERRO:
+${error_msg}
+
+Modo de Execução: ${execution_mode}
+
+Parâmetros:
+force = ${force_flag}
+dry_run = ${dry_run}
+validate = ${validate_flag}
+
+--------------------------------------------------
+© 2025 - Sistema Catálise - Notificação automática

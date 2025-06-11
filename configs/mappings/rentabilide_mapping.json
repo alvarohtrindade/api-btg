@@ -1,0 +1,67 @@
+{
+  "column_mapping": {
+    "fundName": "NmFundo",
+    "account": "CdConta",
+    "cnpj": "DocFundo",
+    "referenceDate": "DtPosicao",
+    "liquidQuote": "VlrCotacao",
+    "rawQuote": "VlrCotacaoBruta",
+    "assetValue": "VlrPatrimonio",
+    "numberOfQuotes": "QtdCota",
+    "acquisitions": "VlrAplicacao",
+    "redemptions": "VlrResgate",
+    "profitability.day": "RentDia",
+    "profitability.month": "RentMes",
+    "profitability.year": "RentAno",
+    "quotaProfitabilityDifference.CDIE.NominalVsIndexador.Day": "RentDiaVsCDI",
+    "quotaProfitabilityDifference.CDIE.NominalVsIndexador.Month": "RentMesVsCDI",
+    "quotaProfitabilityDifference.CDIE.NominalVsIndexador.Year": "RentAnoVsCDI",
+    "hierarchyClass": "TpClasse"
+  },
+  "fund_name_mapping": {
+    "CATALISE RENDA FIXA FIC FIM CP": "CATALISE RENDA FIXA FIC FIM CP",
+    "CATALISE PREVIDENCIA FIC FIM": "CATALISE PREVIDENCIA FIC FIM",
+    "CATALISE PROGRESSIVO FIC FIM": "CATALISE PROGRESSIVO FIC FIM"
+  },
+  "data_types": {
+    "VlrCotacao": "decimal(15,6)",
+    "VlrCotacaoBruta": "decimal(15,6)",
+    "VlrPatrimonio": "decimal(18,2)",
+    "QtdCota": "decimal(15,6)",
+    "VlrAplicacao": "decimal(18,2)",
+    "VlrResgate": "decimal(18,2)",
+    "RentDia": "decimal(8,6)",
+    "RentMes": "decimal(8,6)",
+    "RentAno": "decimal(8,6)",
+    "RentDiaVsCDI": "decimal(8,6)",
+    "RentMesVsCDI": "decimal(8,6)",
+    "RentAnoVsCDI": "decimal(8,6)"
+  },
+  "decimal_precisions": {
+    "VlrCotacao": 6,
+    "VlrCotacaoBruta": 6,
+    "VlrPatrimonio": 2,
+    "QtdCota": 6,
+    "VlrAplicacao": 2,
+    "VlrResgate": 2,
+    "RentDia": 6,
+    "RentMes": 6,
+    "RentAno": 6,
+    "RentDiaVsCDI": 6,
+    "RentMesVsCDI": 6,
+    "RentAnoVsCDI": 6
+  },
+  "required_columns": [
+    "NmFundo",
+    "DtPosicao",
+    "VlrCotacao"
+  ],
+  "percentage_fields": [
+    "RentDia",
+    "RentMes", 
+    "RentAno",
+    "RentDiaVsCDI",
+    "RentMesVsCDI",
+    "RentAnoVsCDI"
+  ]
+}
